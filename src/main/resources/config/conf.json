@@ -1,0 +1,21 @@
+{
+	"useAes": false,
+	"aesKey": "",
+	"aesInitVector": "",
+	"aesMode": "",
+	"aesPadding": "",
+	"useLogHeader": false,
+	"logHeader": "",
+	"protocol": "UDP",
+	"ip": "127.0.0.1",
+	"port": 514,
+	"speed": 1000,
+	"total": -1,
+	"file": "../logs/aaa.txt",
+	"apiKey": "",
+	"server": "",
+	"topic": "",
+	"fileEncoding": "UTF-8",
+	"logEncoding": "UTF-8",
+	"locale": "ch"
+}
