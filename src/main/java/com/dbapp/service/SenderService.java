@@ -11,6 +11,7 @@ import com.dbapp.service.sender.kafka.KafkaSender;
 import com.dbapp.service.sender.snmptrap.SnmpTrapSender;
 import com.dbapp.service.sender.tcp.TcpSender;
 import com.dbapp.service.sender.udp.UdpSender;
+import com.dbapp.util.Base64Util;
 import com.dbapp.util.Counter;
 import com.dbapp.util.CounterManager;
 import org.apache.commons.collections.CollectionUtils;
@@ -111,12 +112,14 @@ public class SenderService {
                 if (SenderConfig.isUseLogHeader()) {
                     dataSList = prepareLogHeader(dataSList, SenderConfig.getLogHeader());
                 }
-
                 List<List<byte[]>> dataBList = new ArrayList<>(dataSList.size());
                 try {
                     for (List<String> listS : dataSList) {
                         List<byte[]> lb = new ArrayList<>();
                         for (String s : listS) {
+                            if (SenderConfig.isLogBase64()) {
+                                s = Base64Util.encode(s);
+                            }
                             byte[] sb = s.getBytes(logEncoding);
                             lb.add(sb);
                         }
@@ -128,6 +131,9 @@ public class SenderService {
                     sender.stop();
                     return;
                 }
+                if (SenderConfig.isLogBase64()) {
+                    dataSList = prepareBase64(dataSList);
+                }
                 int dataSize = dataBList.size();
                 long goal = SenderConfig.getTotal();
                 int cnt = 0;
@@ -135,16 +141,14 @@ public class SenderService {
                 DisplayService.directPrint(StringUtils.EMPTY);
                 DisplayService.directPrint(SenderConfig.isEn() ? "Start To Send Log" : "开始发送日志");
                 CounterManager.getInstance().start();
-                while (running) {
-                    try {
+                try {
+                    while (running) {
                         long start = System.currentTimeMillis();
-                        if (cnt < dataSize) {
-                            sender.send(dataBList.get(cnt));
-                            sender.send(dataSList.get(cnt), logEncoding);
-                        } else {
-                            sender.send(dataBList.get(0));
-                            sender.send(dataSList.get(0), logEncoding);
+                        if (cnt >= dataSize) {
+                            cnt = 0;
                         }
+                        sender.send(dataBList.get(cnt));
+                        sender.send(dataSList.get(cnt), logEncoding);
                         cnt++;
                         counter.countSent(batch);
                         long cost = System.currentTimeMillis() - start;
@@ -155,9 +159,14 @@ public class SenderService {
                         if (diff > 0) {
                             Thread.sleep(diff);
                         }
-                    } catch (InterruptedException i) {
-                        System.out.println("Interrupted Sender!");
-                        return;
+                    }
+                } catch (InterruptedException i) {
+                    System.out.println("Interrupted Sender!");
+                } finally {
+                    try {
+                        stopSend();
+                    } catch (Exception e) {
+                        DisplayService.directPrint("stop send", e);
                     }
                 }
             }
@@ -174,6 +183,19 @@ public class SenderService {
         for (List<String> list : dataSList) {
             listList.add(list.stream()
                     .map(s -> header + " " + s)
+                    .collect(Collectors.toList()));
+        }
+        return listList;
+    }
+
+    private static List<List<String>> prepareBase64(List<List<String>> dataSList) {
+        if (CollectionUtils.isEmpty(dataSList)) {
+            return dataSList;
+        }
+        List<List<String>> listList = new ArrayList<>(dataSList.size());
+        for (List<String> list : dataSList) {
+            listList.add(list.stream()
+                    .map(Base64Util::encode)
                     .collect(Collectors.toList()));
         }
         return listList;

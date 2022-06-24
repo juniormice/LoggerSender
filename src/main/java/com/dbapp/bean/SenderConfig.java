@@ -1,6 +1,7 @@
 package com.dbapp.bean;
 
 import com.dbapp.bean.table.TextTreeTable;
+import com.dbapp.util.Base64Util;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,8 @@ public class SenderConfig {
     // locale
     private static String locale;
     private static boolean en;
+    private static boolean logBase64;
+    private static boolean fileBase64;
 
     public static void update(AutoConfig autoConfig) {
         if (autoConfig == null) {
@@ -66,16 +70,30 @@ public class SenderConfig {
 
     public synchronized static void updateLogEncoding(String encoding) {
         try {
-            logEncoding = Charset.forName(encoding);
-        } catch (Exception ignored) {
+            if (Base64Util.ENCODING_BASE64.equals(encoding)) {
+                logEncoding = StandardCharsets.UTF_8;
+                logBase64 = true;
+            } else {
+                logEncoding = Charset.forName(encoding);
+                logBase64 = false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
     public synchronized static void updateFileEncoding(String encoding) {
         try {
-            fileEncoding = Charset.forName(encoding);
+            if (Base64Util.ENCODING_BASE64.equals(encoding)) {
+                fileEncoding = StandardCharsets.UTF_8;
+                fileBase64 = true;
+            } else {
+                fileEncoding = Charset.forName(encoding);
+                fileBase64 = false;
+            }
             dataLoaded = false;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -97,6 +115,9 @@ public class SenderConfig {
                  BufferedReader bufferedReader = new BufferedReader(reader)) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
+                    if (fileBase64) {
+                        line = Base64Util.decode(line);
+                    }
                     list.add(line);
                 }
             } catch (Exception e) {
@@ -207,13 +228,21 @@ public class SenderConfig {
         config.setPort(port);
         config.setSpeed(speed);
         config.setTotal(total);
-        if(!originFilePath.contains("\\\\") && originFilePath.contains("\\")) {
+        if (!originFilePath.contains("\\\\") && originFilePath.contains("\\")) {
             config.setFile(originFilePath.replaceAll("\\\\", "\\\\\\\\"));
-        }else {
+        } else {
             config.setFile(originFilePath);
         }
-        config.setFileEncoding(fileEncoding.displayName());
-        config.setLogEncoding(logEncoding.displayName());
+        if (fileBase64) {
+            config.setFileEncoding(Base64Util.ENCODING_BASE64);
+        } else {
+            config.setFileEncoding(fileEncoding.displayName());
+        }
+        if (logBase64) {
+            config.setLogEncoding(Base64Util.ENCODING_BASE64);
+        } else {
+            config.setLogEncoding(logEncoding.displayName());
+        }
         config.setApiKey(apiKey);
         config.setServer(server);
         config.setTopic(topic);
@@ -270,7 +299,9 @@ public class SenderConfig {
             values.add(new String[]{en ? "Kafka Address(server): " : "Kafka服务地址(Server)：", formatStr(server)});
             values.add(new String[]{en ? "Kafka Topic" : "Kafka主题(Topic)：", formatStr(topic)});
         }
-        values.add(new String[]{en ? "logFileEncoding / sendLogEncoding" : "文件编码 / 发送编码：", fileEncoding.displayName() + " / " + logEncoding.displayName()});
+        values.add(new String[]{en ? "logFileEncoding / sendLogEncoding" : "文件编码 / 发送编码：",
+                (fileBase64 ? Base64Util.ENCODING_BASE64_DISPLAY : fileEncoding.displayName()) + " / " +
+                        (logBase64 ? Base64Util.ENCODING_BASE64_DISPLAY : logEncoding.displayName())});
         int size = files.size();
         if (size < 1) {
             values.add(new String[]{en ? "logFile" : "日志文件：", "-"});
@@ -320,6 +351,10 @@ public class SenderConfig {
 
     public static Charset getLogEncoding() {
         return logEncoding;
+    }
+
+    public static boolean isLogBase64() {
+        return logBase64;
     }
 
     public static String getApiKey() {
