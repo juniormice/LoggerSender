@@ -6,7 +6,7 @@
 
     <groupId>com.dbapp</groupId>
     <artifactId>LogSender</artifactId>
-    <version>2.2</version>
+    <version>2.3</version>
 
     <properties>
         <jline-version>3.14.1</jline-version>
@@ -34,8 +34,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.10</version>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
         </dependency>
         <dependency>
             <groupId>org.snmp4j</groupId>

@@ -42,6 +42,7 @@ public class SenderConfig {
     private static boolean en;
     private static boolean logBase64;
     private static boolean fileBase64;
+    private static boolean ssl;
 
     public static void update(AutoConfig autoConfig) {
         if (autoConfig == null) {
@@ -56,6 +57,7 @@ public class SenderConfig {
         updateFileEncoding(autoConfig.getFileEncoding());
         updateLogEncoding(autoConfig.getLogEncoding());
         updateApiKey(autoConfig.getApiKey());
+        updateSsl(autoConfig.isSsl());
         updateServer(autoConfig.getServer());
         updateTopic(autoConfig.getTopic());
         updateUseAes(autoConfig.isUseAes());
@@ -186,6 +188,10 @@ public class SenderConfig {
         }
     }
 
+    public synchronized static void updateSsl(boolean sslIn) {
+        ssl = sslIn;
+    }
+
     public synchronized static void updateAesKey(String aesKeyIn) {
         aesKey = aesKeyIn;
     }
@@ -244,6 +250,7 @@ public class SenderConfig {
             config.setLogEncoding(logEncoding.displayName());
         }
         config.setApiKey(apiKey);
+        config.setSsl(ssl);
         config.setServer(server);
         config.setTopic(topic);
         config.setUseAes(useAes);
@@ -285,7 +292,7 @@ public class SenderConfig {
         }
         if (!ProtocolType.KAFKA.equals(protocol)) {
             if (ProtocolType.HTTP.equals(protocol)) {
-                values.add(new String[]{en ? "Send Address: " : "发送地址: ", "http://" + ip + ":" + port + "/c/externalHttpReceiver2"});
+                values.add(new String[]{en ? "Send Address: " : "发送地址: ", (ssl ? "https" : "http") + "://" + ip + ":" + port + "/c/externalHttpReceiver2"});
             } else {
                 values.add(new String[]{en ? "Send Address: Port" : "发送地址：端口", formatStr(ip) + ":" + port});
             }
@@ -399,5 +406,9 @@ public class SenderConfig {
 
     public static boolean isEn() {
         return en;
+    }
+
+    public static boolean isSsl() {
+        return ssl;
     }
 }

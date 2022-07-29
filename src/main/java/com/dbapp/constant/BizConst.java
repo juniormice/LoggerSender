@@ -36,6 +36,7 @@ public class BizConst {
     public static final String UPDATE_LOCALE = "update locale [cn/en]";
     public static final String SWITCH_AES = "switch aes [on/off]";
     public static final String SWITCH_HEADER = "switch logHeader [on/off]";
+    public static final String SWITCH_SSL = "switch ssl [on/off]";
     public static final String CMD_CONST_CD = "cd";
     public static final String CMD_CONST_PROTOCOL = "protocol";
     public static final String CMD_CONST_IP = "ip";
@@ -46,6 +47,7 @@ public class BizConst {
     public static final String CMD_CONST_API_KEY = "apikey";
     public static final String CMD_CONST_SERVER = "server";
     public static final String CMD_CONST_TOPIC = "topic";
+    public static final String CMD_CONST_SSL = "ssl";
     public static final String CMD_CONST_FILE_ENCODING = "fileencoding";
     public static final String CMD_CONST_LOG_ENCODING = "logencoding";
     public static final String CMD_CONST_AES_KEY = "aeskey";

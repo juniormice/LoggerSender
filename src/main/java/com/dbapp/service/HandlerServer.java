@@ -325,6 +325,21 @@ public class HandlerServer {
         }
     }
 
+    private static void switchSsl(List<String> cmdList, String cmd) {
+        if (CollectionUtils.isEmpty(cmdList)) {
+            return;
+        }
+        int cmdSize = cmdList.size();
+        if (cmdSize > CMD_ARG_INDEX_TWO) {
+            String value = cmdList.get(CMD_ARG_INDEX_TWO);
+            SwitchType type = SwitchType.of(value);
+            SenderConfig.updateSsl(SwitchType.ON.equals(type));
+            DisplayService.updateSuccess();
+        } else {
+            DisplayService.cmdNotExists(cmd);
+        }
+    }
+
     private static void updateServer(List<String> cmdList, String cmd) {
         if (CollectionUtils.isEmpty(cmdList)) {
             return;
@@ -545,6 +560,9 @@ public class HandlerServer {
         switch (second.toLowerCase()) {
             case CMD_CONST_AES:
                 switchAes(cmdList, cmd);
+                break;
+            case CMD_CONST_SSL:
+                switchSsl(cmdList, cmd);
                 break;
             case CMD_CONST_LOG_HEADER:
                 switchLogHeader(cmdList, cmd);

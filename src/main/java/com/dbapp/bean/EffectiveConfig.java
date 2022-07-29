@@ -9,6 +9,7 @@ public class EffectiveConfig {
     private final String server;
     private final String topic;
     private final Charset logEncoding;
+    private final boolean ssl;
 
     public EffectiveConfig() {
         this.ip = SenderConfig.getIp();
@@ -17,6 +18,7 @@ public class EffectiveConfig {
         this.server = SenderConfig.getServer();
         this.topic = SenderConfig.getTopic();
         this.logEncoding = SenderConfig.getLogEncoding();
+        this.ssl = SenderConfig.isSsl();
     }
 
     public String getIp() {
@@ -41,5 +43,9 @@ public class EffectiveConfig {
 
     public Charset getLogEncoding() {
         return logEncoding;
+    }
+
+    public boolean isSsl() {
+        return ssl;
     }
 }

@@ -45,6 +45,15 @@ public class CommandService {
         );
     }
 
+    private static ArgumentCompleter argumentCompleterSwitchSsl() {
+        return new ArgumentCompleter(
+                new StringsCompleter("switch"),
+                new StringsCompleter("ssl"),
+                new EnumCompleter(SwitchType.class),
+                new NullCompleter()
+        );
+    }
+
     private static ArgumentCompleter argumentCompleterSwitchLogHeader() {
         return new ArgumentCompleter(
                 new StringsCompleter("switch"),
@@ -151,7 +160,8 @@ public class CommandService {
     private static AggregateCompleter argumentCompleterSwitch() {
         return new AggregateCompleter(
                 argumentCompleterSwitchAes(),
-                argumentCompleterSwitchLogHeader()
+                argumentCompleterSwitchLogHeader(),
+                argumentCompleterSwitchSsl()
         );
     }
 

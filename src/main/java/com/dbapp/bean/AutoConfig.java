@@ -15,6 +15,7 @@ public class AutoConfig {
     private String logEncoding;
     // http
     private String apiKey;
+    private boolean ssl;
     // kafka
     private String server;
     private String topic;
@@ -186,6 +187,14 @@ public class AutoConfig {
         this.locale = locale;
     }
 
+    public boolean isSsl() {
+        return ssl;
+    }
+
+    public void setSsl(boolean ssl) {
+        this.ssl = ssl;
+    }
+
     public String format() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{").append(LINE);
@@ -203,6 +212,7 @@ public class AutoConfig {
         stringBuilder.append(TAB).append("\"total\": ").append(total).append(",").append(LINE);
         stringBuilder.append(TAB).append("\"file\": ").append("\"").append(formatStr(file)).append("\",").append(LINE);
         stringBuilder.append(TAB).append("\"apiKey\": ").append("\"").append(formatStr(apiKey)).append("\",").append(LINE);
+        stringBuilder.append(TAB).append("\"ssl\": ").append(ssl).append(",").append(LINE);
         stringBuilder.append(TAB).append("\"server\": ").append("\"").append(formatStr(server)).append("\",").append(LINE);
         stringBuilder.append(TAB).append("\"topic\": ").append("\"").append(formatStr(topic)).append("\",").append(LINE);
         stringBuilder.append(TAB).append("\"fileEncoding\": ").append("\"").append(formatStr(fileEncoding)).append("\",").append(LINE);

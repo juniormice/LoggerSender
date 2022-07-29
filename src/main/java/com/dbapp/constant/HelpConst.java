@@ -46,6 +46,7 @@ public class HelpConst {
     public static final String UPDATE_AES_PADDING_HELP = isEn() ? " update padding type while using AES" : " 更新AES补码方式";
     private static final String SWITCH_AES_HELP = isEn() ? " open/close AES Encrypt" : " 打开/关闭AES加密";
     private static final String SWITCH_HEADER_HELP = isEn() ? " open/close Append Log Header" : " 打开/关闭添加日志头";
+    private static final String SWITCH_SSL_HELP = isEn() ? " open/close ssl when use http protocol" : " 打开/关闭在http协议时使用ssl";
     private static final String MODULE_ANNOTATION_HEADER = isEn() ? " support commands(use <Tab> to complete)" : " 支持的命令如下（支持命令tab补全）：";
     public static final String HELP_CMD = FORMAT_HEADER +
             (isEn() ? BizConst.HELP_HELP_EN : BizConst.HELP_HELP) + LINE_BREAK +
@@ -80,6 +81,7 @@ public class HelpConst {
             MODULE_FORMAT_PREFIX + BizConst.CMD_CONST_SWITCH + ANNOTATION_LINE + CMD_ANNOTATION_SWITCH + LINE_BREAK +
             CMD_FORMAT_PREFIX + BizConst.SWITCH_AES + ANNOTATION_LINE + SWITCH_AES_HELP + LINE_BREAK +
             CMD_FORMAT_PREFIX + BizConst.SWITCH_HEADER + ANNOTATION_LINE + SWITCH_HEADER_HELP + LINE_BREAK +
+            CMD_FORMAT_PREFIX + BizConst.SWITCH_SSL + ANNOTATION_LINE + SWITCH_SSL_HELP + LINE_BREAK +
             MODULE_FORMAT_PREFIX + BizConst.CMD_CONST_SHOW + ANNOTATION_LINE + CMD_ANNOTATION_SHOW + LINE_BREAK +
             MODULE_FORMAT_PREFIX + BizConst.CMD_CONST_SAVE + ANNOTATION_LINE + CMD_ANNOTATION_SAVE + LINE_BREAK +
             LINE_BREAK +
